@@ -1,64 +1,85 @@
 /*
-Parse equations is a recursive function
-returns an int result of the interior operations
-minimizes with substrings going right then left
-Order of operations using contains and further reducing for recursive calls
+Created by Sidney Nimako-Boateng
+Four Fours App
+TODO: Add square root function
  */
-int parseEquation(String eq) {
-  eq.replaceAll(' ', ''); //Remove all spaces ONE TIME
-  eq.replaceAll('//4', '2'); //Square roots ONE TIME
-  int result = 0;
-  //If there is grouping symbols evaluate the subset within the symbols
-  while (eq.contains('('))  {
-    //Store result of inner grouping left as int
-    result += parseEquation(eq.substring(eq.indexOf('('),eq.indexOf(')')));
-    //Reset bounds
-    eq = eq.substring(eq.indexOf(')') + 1);
-  }
-  //Order of operations
 
-  //TODO: Decide on squared or to the fourth
-  //Loop for multiplication and division
-  while (eq.contains('x') || eq.contains('/')) {
-    double res = 0;
-    int multIndex = eq.indexOf('x');
-    int divIndex = eq.indexOf('/');
-    if (multIndex < divIndex && divIndex != -1) {
-      res = eq.substring(multIndex - 1, multIndex) as double;
-      res *= eq.substring(multIndex, multIndex + 1) as int;
-      eq.replaceAll(eq.substring(multIndex - 1, multIndex + 1), res as String);
-    } else if (multIndex != -1){
-      double res = 0;
-      res = eq.substring(divIndex - 1, divIndex) as double;
-      res /= eq.substring(divIndex, divIndex + 1) as int;
-      eq.replaceAll(eq.substring(divIndex - 1, divIndex + 1), res as String);
-    } else {
-      print(eq);
-      break;
+/*
+Parses a string equation to a numerical value
+ */
+int parseEquation(String equation) {
+  //Stores values in the cases of parentheses
+  var values = [];
+  //Actual numerical value to be returned
+  int val = 0;
+  //Efficiency if the equation does not contain any grouping symbols
+  if (!equation.contains("(")) {
+    return calculate(equation);
+  }
+  //Loop through if the equation does have parentheses adding the calculated
+  // values to the values array
+  while (equation.contains('(')) {
+    //Call the calculate function on the sub equation within the parentheses
+    values.add(calculate(equation.substring(equation.indexOf('(')+1, equation.indexOf(')'))));
+    //Modify the equation to remove the parentheses and their contents
+    equation = equation.replaceRange(0, equation.indexOf(')')+1," ");
+  }
+  //If their is an operation to be done outside of the parentheses
+  if(!(equation.substring(0,1) is num)) {
+    //Calculate the value of the integers within the values array
+    for (int i = 0; i < values.length; i++) {
+      val += values[i];
     }
-  }
-  while (eq.contains('+') || eq.contains('-')) {
-    double res = 0;
-    int addIndex = eq.indexOf('+');
-    int subIndex = eq.indexOf('-');
-    if (addIndex < subIndex && subIndex != -1) {
-      res = eq.substring(addIndex - 1, addIndex) as double;
-      res += eq.substring(addIndex, addIndex + 1) as int;
-      eq.replaceAll(eq.substring(addIndex - 1, addIndex + 1), res as String);
-    } else if (addIndex != -1){
-      double res = 0;
-      res = eq.substring(subIndex - 1, subIndex) as double;
-      res -= eq.substring(subIndex, subIndex + 1) as int;
-      eq.replaceAll(eq.substring(subIndex - 1, subIndex + 1), res as String);
-    } else {
-      print(eq);
-      break;
+    //Return the value of the new equation re-calling parseEquation
+    return parseEquation("$val" + equation);
+  } else {
+    //If there is no other operations to be done sum the values and return
+    for (int i = 0; i < values.length; i++) {
+      val += values[i];
     }
-  }
-  if (int.tryParse(eq) != null) {
-    return eq as int;
+    return val;
   }
 
-
-    return result;
+}
+/*
+  Calculates the value of an equation
+  param: equation to be calculated
+ */
+int calculate(String subEquation) {
+  //Remove all spaces
+  subEquation = subEquation.replaceAll(" ","");
+  //Value to be returned
+  int val;
+  //If the first number is two digits
+  if (int.tryParse(subEquation.substring(0,2)) != null) {
+    val = int.parse(subEquation.substring(0,2));
   }
+  else {
+    val = int.parse(subEquation.substring(0,1));
+  }
+  //Iterate through the subEquation performing operations as seen
+  while(subEquation.length >= 1) {
+    switch (subEquation.substring(0,1)) {
+      case '/':
+        val ~/= int.parse(subEquation.substring(1,2));
+        subEquation = subEquation.substring(1);
+        break;
+      case 'x':
+        val *= int.parse(subEquation.substring(1,2));
+        subEquation = subEquation.substring(1);
+        break;
+      case '+':
+        val += int.parse(subEquation.substring(1,2));
+        subEquation = subEquation.substring(1);
+        break;
+      case '-':
+        val -= int.parse(subEquation.substring(1,2));
+        subEquation = subEquation.substring(1);
+        break;
+    }
+    //Remove the first character in the equation
+    subEquation = subEquation.substring(1);
+  }
+  //Return the computed value
+  return val;
+}
