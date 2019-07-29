@@ -14,13 +14,13 @@ int parseEquation(String equation) {
   int val = 0;
   //Efficiency if the equation does not contain any grouping symbols
   if (!equation.contains("(")) {
-    return calculate(equation);
+    return oop(equation);
   }
   //Loop through if the equation does have parentheses adding the calculated
   // values to the values array
   while (equation.contains('(')) {
     //Call the calculate function on the sub equation within the parentheses
-    values.add(calculate(equation.substring(equation.indexOf('(')+1, equation.indexOf(')'))));
+    values.add(oop(equation.substring(equation.indexOf('(')+1, equation.indexOf(')'))));
     //Modify the equation to remove the parentheses and their contents
     equation = equation.replaceRange(0, equation.indexOf(')')+1," ");
   }
@@ -50,6 +50,8 @@ int calculate(String subEquation) {
   subEquation = subEquation.replaceAll(" ","");
   //Value to be returned
   int val;
+  //Array of values for order of operations
+  var values = [];
   //If the first number is two digits
   if (int.tryParse(subEquation.substring(0,2)) != null) {
     val = int.parse(subEquation.substring(0,2));
@@ -80,6 +82,72 @@ int calculate(String subEquation) {
     //Remove the first character in the equation
     subEquation = subEquation.substring(1);
   }
+
   //Return the computed value
   return val;
+}
+
+int oop(String subEquation) {
+  var values = [];
+  int val = 0;
+  while (subEquation.contains('\u221a')) {
+    subEquation = subEquation.replaceRange(subEquation.indexOf('\u221a'), subEquation.indexOf('\u221a')+2,"2");
+  }
+  while(subEquation.contains("/") || subEquation.contains("x")) {
+    //Contains Multiplication
+    if (subEquation.contains("x")) {
+      //Both signs
+      if (subEquation.contains("/")) {
+        //Multiplication before division
+        if(subEquation.indexOf("x") < subEquation.indexOf("/")) {
+          int temp = calculate(subEquation.substring(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2));
+          subEquation = subEquation.replaceRange(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2,"$temp");
+        }
+        //Division before Multiplication
+        else {
+          int temp = calculate(subEquation.substring(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2));
+          subEquation = subEquation.replaceRange(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2, "$temp");
+        }
+      }
+      //Only multiplication
+      else {
+        int temp = calculate(subEquation.substring(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2));
+        subEquation = subEquation.replaceRange(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2,"$temp");
+      }
+    }
+    //Only has division
+    else {
+      int temp = calculate(subEquation.substring(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2));
+      subEquation = subEquation.replaceRange(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2,"$temp");
+    }
+  }
+  while(subEquation.contains("-") || subEquation.contains("+")) {
+    //Contains addition
+    if (subEquation.contains("+")) {
+      //Both signs
+      if (subEquation.contains("-")) {
+        //Addition before subtraction
+        if(subEquation.indexOf("+") < subEquation.indexOf("-")) {
+          int temp = calculate(subEquation.substring(subEquation.indexOf("+")-1, subEquation.indexOf("+")+2));
+          subEquation = subEquation.replaceRange(subEquation.indexOf("+")-1, subEquation.indexOf("+")+2,"$temp");
+        }
+        //Subtraction before addition
+        else {
+          int temp = calculate(subEquation.substring(subEquation.indexOf("-")-1, subEquation.indexOf("-")+2));
+          subEquation = subEquation.replaceRange(subEquation.indexOf("-")-1, subEquation.indexOf("-")+2, "$temp");
+        }
+      }
+      //Only addition
+      else {
+        int temp = calculate(subEquation.substring(subEquation.indexOf("+")-1, subEquation.indexOf("+")+2));
+        subEquation = subEquation.replaceRange(subEquation.indexOf("+")-1, subEquation.indexOf("+")+2,"$temp");
+      }
+    }
+    //Only has subtraction
+    else {
+      int temp = calculate(subEquation.substring(subEquation.indexOf("-")-1, subEquation.indexOf("-")+2));
+      subEquation = subEquation.replaceRange(subEquation.indexOf("-")-1, subEquation.indexOf("-")+2,"$temp");
+    }
+  }
+  return int.parse(subEquation);
 }
