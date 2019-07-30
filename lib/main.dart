@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'MathString.dart';
-
+import 'package:flutter/services.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -90,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _clear();
       } else {
         if(_counter != 4) {
-         _alert="You must use 4 fours";
-         _value += "=$_computation";
+          _alert="You must use 4 fours";
+          _value += "=$_computation";
         } else {
 
           _alert = "Try Again!";
@@ -126,57 +126,81 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('$_goal',
-            style: Theme.of(context).textTheme.display2,),
-            Text(
-              '$_value',
-              style: Theme.of(context).textTheme.display1,
+        body: Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
+          child: Center(
+            child: Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Text("Goal:"),
+                    Text('$_goal',
+                      style: Theme.of(context).textTheme.display2,),
+                  ],
+                ),
+
+                Container(
+                    color: Colors.transparent,
+                    child: Container(
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          child: Center(
+                            child: Text(
+                              '$_value',
+                              style: Theme.of(context).textTheme.display1,
+                              textAlign: TextAlign.center,
+
+                            ),
+                          )
+                      ),
+                      decoration: BoxDecoration(
+                          color: Colors.blue[100],
+                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04)
+                      ),
+                    )
+
+                ),
+ 
+                    Text(
+                        "Fours Used: $_counter of 4",
+                        textAlign: TextAlign.center,
+                        ),
+
+
+//                Text('$_alert'),
+                SizedBox(
+                    height: 300,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        RaisedButton(onPressed: _four, child: Text("4"),),
+                        RaisedButton(onPressed: _backspace, child: Text("<DEL"),),
+                        Row(children: <Widget>[
+                          RaisedButton(onPressed: _sqrt, child: Text("\u221a"),),
+                          RaisedButton(onPressed: _mult, child: Text("x"),),
+                          RaisedButton(onPressed: _div, child: Text("\u00F7")),
+                        ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
+                        Row(children: <Widget>[
+                          RaisedButton(onPressed: _clear, child: Text("C")),
+                          RaisedButton(onPressed: _plus, child: Text("+"),),
+                          RaisedButton(onPressed: _minus, child: Text("-")),
+                        ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
+                        Row(children: <Widget>[
+                          RaisedButton(onPressed: _equals, child: Text("=")),
+                          RaisedButton(onPressed: _openParen, child: Text("("),),
+                          RaisedButton(onPressed: _closeParen, child: Text(")")),
+                        ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
+                      ],
+                    )
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            Text('$_alert'),
-            SizedBox(
-              height: 300,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RaisedButton(onPressed: _four, child: Text("4"),),
-                  RaisedButton(onPressed: _backspace, child: Text("<DEL"),),
-                  Row(children: <Widget>[
-                    RaisedButton(onPressed: _sqrt, child: Text("\u221a"),),
-                    RaisedButton(onPressed: _mult, child: Text("x"),),
-                    RaisedButton(onPressed: _div, child: Text("\u00F7")),
-                  ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
-                  Row(children: <Widget>[
-                    RaisedButton(onPressed: _clear, child: Text("C")),
-                    RaisedButton(onPressed: _plus, child: Text("+"),),
-                    RaisedButton(onPressed: _minus, child: Text("-")),
-                  ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
-                  Row(children: <Widget>[
-                    RaisedButton(onPressed: _equals, child: Text("=")),
-                    RaisedButton(onPressed: _openParen, child: Text("("),),
-                    RaisedButton(onPressed: _closeParen, child: Text(")")),
-                  ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
-                ],
-              )
-            )
-
-
-
-
-
-
-
-          ],
-        ),
-      ),
+          ),
+        )
     );
   }
 }
