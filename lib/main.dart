@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _div() {
     setState(() {
-      _value+="/";
+      _value+="\u00F7";
     });
   }
 
@@ -109,22 +110,29 @@ class _MyHomePageState extends State<MyHomePage> {
         _alert = "Only 4 Fours allowed!!";
       }
     });
-}
+  }
+
+  void _backspace() {
+    setState(() {
+      int len = _value.length;
+      if (int.tryParse(_value.substring(len-1)) != null) {
+        _counter--;
+      }
+      _value = _value.substring(0, len-1);
+    });
+  }
 
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-               title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('$_alert'),
-            Text('$_goal'),
+            Text('$_goal',
+            style: Theme.of(context).textTheme.display2,),
             Text(
               '$_value',
               style: Theme.of(context).textTheme.display1,
@@ -133,16 +141,18 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            Text('$_alert'),
             SizedBox(
               height: 300,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   RaisedButton(onPressed: _four, child: Text("4"),),
+                  RaisedButton(onPressed: _backspace, child: Text("<DEL"),),
                   Row(children: <Widget>[
                     RaisedButton(onPressed: _sqrt, child: Text("\u221a"),),
                     RaisedButton(onPressed: _mult, child: Text("x"),),
-                    RaisedButton(onPressed: _div, child: Text("/")),
+                    RaisedButton(onPressed: _div, child: Text("\u00F7")),
                   ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
                   Row(children: <Widget>[
                     RaisedButton(onPressed: _clear, child: Text("C")),

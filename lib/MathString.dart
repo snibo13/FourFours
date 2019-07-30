@@ -93,20 +93,20 @@ int oop(String subEquation) {
   while (subEquation.contains('\u221a')) {
     subEquation = subEquation.replaceRange(subEquation.indexOf('\u221a'), subEquation.indexOf('\u221a')+2,"2");
   }
-  while(subEquation.contains("/") || subEquation.contains("x")) {
+  while(subEquation.contains("\u00F7") || subEquation.contains("x")) {
     //Contains Multiplication
     if (subEquation.contains("x")) {
       //Both signs
-      if (subEquation.contains("/")) {
+      if (subEquation.contains("\u00F7")) {
         //Multiplication before division
-        if(subEquation.indexOf("x") < subEquation.indexOf("/")) {
+        if(subEquation.indexOf("x") < subEquation.indexOf("\u00F7")) {
           int temp = calculate(subEquation.substring(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2));
           subEquation = subEquation.replaceRange(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2,"$temp");
         }
         //Division before Multiplication
         else {
-          int temp = calculate(subEquation.substring(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2));
-          subEquation = subEquation.replaceRange(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2, "$temp");
+          int temp = calculate(subEquation.substring(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2));
+          subEquation = subEquation.replaceRange(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2, "$temp");
         }
       }
       //Only multiplication
@@ -117,8 +117,8 @@ int oop(String subEquation) {
     }
     //Only has division
     else {
-      int temp = calculate(subEquation.substring(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2));
-      subEquation = subEquation.replaceRange(subEquation.indexOf("/")-1, subEquation.indexOf("/")+2,"$temp");
+      int temp = calculate(subEquation.substring(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2));
+      subEquation = subEquation.replaceRange(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2,"$temp");
     }
   }
   while(subEquation.contains("-") || subEquation.contains("+")) {
