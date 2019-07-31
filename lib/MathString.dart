@@ -37,6 +37,7 @@ int parseEquation(String equation) {
     for (int i = 0; i < values.length; i++) {
       val += values[i];
     }
+    print(equation);
     return val;
   }
 
@@ -102,23 +103,27 @@ int oop(String subEquation) {
         if(subEquation.indexOf("x") < subEquation.indexOf("\u00F7")) {
           int temp = calculate(subEquation.substring(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2));
           subEquation = subEquation.replaceRange(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2,"$temp");
+          print(subEquation);
         }
         //Division before Multiplication
         else {
           int temp = calculate(subEquation.substring(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2));
           subEquation = subEquation.replaceRange(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2, "$temp");
+          print(subEquation);
         }
       }
       //Only multiplication
       else {
         int temp = calculate(subEquation.substring(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2));
         subEquation = subEquation.replaceRange(subEquation.indexOf("x")-1, subEquation.indexOf("x")+2,"$temp");
+        print(subEquation);
       }
     }
     //Only has division
     else {
       int temp = calculate(subEquation.substring(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2));
       subEquation = subEquation.replaceRange(subEquation.indexOf("\u00F7")-1, subEquation.indexOf("\u00F7")+2,"$temp");
+      print(subEquation);
     }
   }
   while(subEquation.contains("-") || subEquation.contains("+")) {

@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _clear() {
     setState(() {
       _value = "";
-      _counter = 0;
+      _counter = 4;
     });
   }
 
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _goal++;
         _clear();
       } else {
-        if(_counter != 4) {
+        if(_counter != 0) {
           _alert="You must use 4 fours";
           _value += "=$_computation";
         } else {
@@ -103,11 +103,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _four() {
     setState(() {
-      if (_counter < 4) {
-        _value += "4";
-        _counter++;
-      } else {
+      if (_counter == 0) {
         _alert = "Only 4 Fours allowed!!";
+      } else {
+        _value += "4";
+        _counter--;
       }
     });
   }
@@ -128,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
+        backgroundColor: Color(0xffCED4CC),
         body: Padding(
           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
           child: Center(
@@ -153,46 +154,72 @@ class _MyHomePageState extends State<MyHomePage> {
                               '$_value',
                               style: Theme.of(context).textTheme.display1,
                               textAlign: TextAlign.center,
-
                             ),
                           )
                       ),
                       decoration: BoxDecoration(
-                          color: Colors.blue[100],
+                          color: Color(0xff8D9687),
                           borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04)
                       ),
                     )
 
                 ),
- 
-                    Text(
-                        "Fours Used: $_counter of 4",
-                        textAlign: TextAlign.center,
-                        ),
+
+                Text(
+                  "Fours Remaining: $_counter",
+                  textAlign: TextAlign.center,
+                ),
 
 
 //                Text('$_alert'),
                 SizedBox(
-                    height: 300,
+                    height: 500,
+                    width: MediaQuery.of(context).size.width * 0.88,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        RaisedButton(onPressed: _four, child: Text("4"),),
-                        RaisedButton(onPressed: _backspace, child: Text("<DEL"),),
+                        Row(
+                            children: <Widget> [
+                              Expanded (
+                                  flex: 3,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(left: 10, right: 10),
+                                      child: RaisedButton(
+                                        color: Color(0xffEE6E48),
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                                          onPressed: _four, child: Text("4", style: TextStyle(fontSize: 25, color: Color(0xff565C5C))),padding: EdgeInsets.all(11.5),)),
+                              ),
+                              Expanded (
+                                  flex: 3,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(left: 10, right: 10),
+                                      child: RaisedButton(
+                                        color: Color(0xffEE6E48),
+                                        shape: RoundedRectangleBorder(borderRadius:
+                                        BorderRadius.circular(30)),
+                                        onPressed: _equals,
+                                        child: Text("=", style: TextStyle(fontSize: 28, color: Color(0xff565C5C)),),
+                                        padding: EdgeInsets.all(10),))
+                              ),
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly
+                        ),
                         Row(children: <Widget>[
-                          RaisedButton(onPressed: _sqrt, child: Text("\u221a"),),
-                          RaisedButton(onPressed: _mult, child: Text("x"),),
-                          RaisedButton(onPressed: _div, child: Text("\u00F7")),
+                          RaisedButton(color: Color(0xffCCD2C6), shape: CircleBorder(), onPressed: _plus, child: Text("+", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                          RaisedButton(color: Color(0xffCCD2C6), shape: CircleBorder(), onPressed: _minus, child: Text("-", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                          RaisedButton(color: Color(0xffCCD2C6), shape: CircleBorder(), onPressed: _backspace, child: Text("DEL", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
                         ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
                         Row(children: <Widget>[
-                          RaisedButton(onPressed: _clear, child: Text("C")),
-                          RaisedButton(onPressed: _plus, child: Text("+"),),
-                          RaisedButton(onPressed: _minus, child: Text("-")),
+                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _mult, child: Text("x", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _div, child: Text("\u00F7", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _clear, child: Text("C", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+
                         ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
+
                         Row(children: <Widget>[
-                          RaisedButton(onPressed: _equals, child: Text("=")),
-                          RaisedButton(onPressed: _openParen, child: Text("("),),
-                          RaisedButton(onPressed: _closeParen, child: Text(")")),
+                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _sqrt, child: Text("\u221a", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _openParen, child: Text("(" , style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _closeParen, child: Text(")", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
                         ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
                       ],
                     )
