@@ -1,3 +1,13 @@
+void main() {
+  print(parseEquation("4x4"));
+  print(parseEquation("(4x4)"));
+  print(parseEquation("16÷16"));
+  print(parseEquation("(4x4)÷(4x4)"));
+  //print(parseEquation("4+4-√4-√4"));
+  print(parseEquation("(4+4)-(4+4)"));
+
+}
+
 int parseEquation(String equation) {
   var values = [];
   int val = 0;
@@ -128,14 +138,24 @@ String oopPair(String subEquation, String char1, String char2) {
     if (subEquation.contains(char2)) {
       if (subEquation.contains(char1)) {
         if(subEquation.indexOf(char2) < subEquation.indexOf(char1)) {
-          List indeces = digOp(char2, subEquation);
-          temp = calculate(subEquation.indexOf(char2), subEquation.substring(indeces[0], indeces[1]));
-          subEquation = subEquation.replaceRange(indeces[0],indeces[1],"$temp");
+          if (subEquation.length > 3) {
+            List indeces = digOp(char2, subEquation);
+            temp = calculate(subEquation.indexOf(char2), subEquation.substring(indeces[0], indeces[1]));
+            subEquation = subEquation.replaceRange(indeces[0],indeces[1],"$temp");
+          } else {
+            temp = calculate2(subEquation.substring(subEquation.indexOf(char2)-1, subEquation.indexOf(char2)+2));
+            subEquation = subEquation.replaceRange(subEquation.indexOf(char2)-1, subEquation.indexOf(char2)+2,"$temp");
+          }
         }
         else {
-          List indeces = digOp(char1, subEquation);
-          temp = calculate(subEquation.indexOf(char1), subEquation.substring(indeces[0], indeces[1]));
-          subEquation = subEquation.replaceRange(indeces[0],indeces[1],"$temp");
+          if (subEquation.length > 3) {
+            List indeces = digOp(char1, subEquation);
+            temp = calculate(subEquation.indexOf(char1), subEquation.substring(indeces[0], indeces[1]));
+            subEquation = subEquation.replaceRange(indeces[0],indeces[1],"$temp");
+          } else {
+            temp = calculate2(subEquation.substring(subEquation.indexOf(char1)-1, subEquation.indexOf(char1)+2));
+            subEquation = subEquation.replaceRange(subEquation.indexOf(char1)-1, subEquation.indexOf(char1)+2,"$temp");
+          }
         }
       }
       else {
@@ -151,9 +171,14 @@ String oopPair(String subEquation, String char1, String char2) {
       }
     }
     else {
-      List indeces = digOp(char1, subEquation);
-      temp = calculate(subEquation.indexOf(char1), subEquation.substring(indeces[0], indeces[1]));
-      subEquation = subEquation.replaceRange(indeces[0],indeces[1],"$temp");
+      if (subEquation.length > 3) {
+        List indeces = digOp(char1, subEquation);
+        temp = calculate(subEquation.indexOf(char1), subEquation.substring(indeces[0], indeces[1]));
+        subEquation = subEquation.replaceRange(indeces[0],indeces[1],"$temp");
+      } else {
+        temp = calculate2(subEquation.substring(subEquation.indexOf(char1)-1, subEquation.indexOf(char1)+2));
+        subEquation = subEquation.replaceRange(subEquation.indexOf(char1)-1, subEquation.indexOf(char1)+2,"$temp");
+      }
     }
   }
   return subEquation;
