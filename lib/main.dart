@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'MathString.dart';
+//import 'MathString.dart';
+import 'MathEngine.dart';
 import 'package:flutter/services.dart';
 void main() => runApp(MyApp());
 
@@ -84,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _equals() {
     setState(() {
-      _computation = parseEquation(_value);
+      _computation = MathEngine(_value);
       if (_computation == _goal) {
         _goal++;
         _clear();
