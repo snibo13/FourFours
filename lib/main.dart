@@ -117,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       int len = _value.length;
       if (int.tryParse(_value.substring(len-1)) != null) {
-        _counter--;
+        _counter++;
       }
       _value = _value.substring(0, len-1);
     });

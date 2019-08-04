@@ -92,7 +92,7 @@ int calculatePostfix(String equation) {
         case "-":
           int t1 = terms.removeLast();
           int t2 = terms.removeLast();
-          terms.addLast(t1-t2);
+          terms.addLast(t2-t1);
           break;
         case "√":
           int t = terms.removeLast();
