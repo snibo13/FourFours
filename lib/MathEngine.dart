@@ -65,13 +65,11 @@ int calculatePostfix(String equation) {
   int ret = 0;
 
   while(equation.length > 0) {
-    print(equation.length);
     String symbol = equation.substring(0,1);
     if (int.tryParse(symbol) != null) {
       terms.addLast(int.parse(symbol));
       //Remove the first string from the equation (SIDE EFFECT)
       equation = equation.substring(1);
-      print(terms.toString());
     }
     else
     {
@@ -101,7 +99,6 @@ int calculatePostfix(String equation) {
           terms.addLast(sqrt(t).toInt());
           break;
       }
-      print(equation);
 
       //Remove the first string from the equation (SIDE EFFECT)
       equation = equation.substring(1);
