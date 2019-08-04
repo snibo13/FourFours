@@ -1,8 +1,9 @@
-import "dart:collection";
-import "dart:math";
+import 'dart:collection';
+import 'dart:math';
 
 String postfix(String equation) {
-  var operatorPrecedence = {"(":0,"√":5,"x":4,"÷":4,"+":2,"-":2};
+  var operatorPrecedenceInStack = {"(":0,"√":5,"x":4,"÷":4,"+":2,"-":2};
+  var operatorPrecedenceToStack = {"(":10,"√":6,"x":3,"÷":3,"+":1,"-":1}; //Out
   ListQueue operators = new ListQueue(); //Functioning as a queue
   ListQueue output = new ListQueue(); //Functioning as a stack
   while(equation.length > 0) {
@@ -29,15 +30,18 @@ String postfix(String equation) {
           equation = equation.substring(1);
           continue;
         }
-        if (operatorPrecedence[equation.substring(0,1)] > operatorPrecedence[operators.first]) {
+        if (operatorPrecedenceToStack[equation.substring(0,1)] > operatorPrecedenceInStack[operators.first]) {
           //Stack push
           operators.addFirst(equation.substring(0,1));
           //Remove the first string from the equation (SIDE EFFECT)
           equation = equation.substring(1);
         }
         else {
-          while(operatorPrecedence[equation.substring(0,1)] < operatorPrecedence[operators.first]) {
+          while(operatorPrecedenceToStack[equation.substring(0,1)] < operatorPrecedenceInStack[operators.first] && operators.isNotEmpty) {
             output.addLast(operators.removeFirst());
+            if(operators.isEmpty) {
+              break;
+            }
           }
           operators.addFirst(equation.substring(0,1));
           //Remove the first string from the equation (SIDE EFFECT)
@@ -59,12 +63,15 @@ String postfix(String equation) {
 int calculatePostfix(String equation) {
   ListQueue terms = new ListQueue(); //Functioning as a stack
   int ret = 0;
+
   while(equation.length > 0) {
+    print(equation.length);
     String symbol = equation.substring(0,1);
     if (int.tryParse(symbol) != null) {
       terms.addLast(int.parse(symbol));
       //Remove the first string from the equation (SIDE EFFECT)
       equation = equation.substring(1);
+      print(terms.toString());
     }
     else
     {
@@ -94,6 +101,8 @@ int calculatePostfix(String equation) {
           terms.addLast(sqrt(t).toInt());
           break;
       }
+      print(equation);
+
       //Remove the first string from the equation (SIDE EFFECT)
       equation = equation.substring(1);
     }
@@ -101,6 +110,9 @@ int calculatePostfix(String equation) {
   return terms.removeFirst();
 }
 
-int MathEngine(String s) {
+int mathEngine(String s) {
+  print(s);
+  print(postfix(s));
+  print(calculatePostfix(postfix(s)));
   return calculatePostfix(postfix(s));
 }

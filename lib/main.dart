@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _equals() {
     setState(() {
-      _computation = MathEngine(_value);
+      _computation = mathEngine(_value);
       if (_computation == _goal) {
         _goal++;
         _clear();
