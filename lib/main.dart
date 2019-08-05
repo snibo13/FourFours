@@ -1,13 +1,21 @@
+//TODO: Add Factorial and Squared
+import 'package:flame/flame.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
-//import 'MathString.dart';
 import 'MathEngine.dart';
 import 'package:flutter/services.dart';
 void main() => runApp(MyApp());
+
+void loadAudio() async {
+  await Flame.audio.load("assets/audio/correct.mp3");
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    loadAudio();
+
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -33,10 +41,27 @@ class _MyHomePageState extends State<MyHomePage> {
   int _goal = 0;
   int _computation;
   String _alert = " ";
-
   void _plus() {
     setState(() {
       _value+= "+";
+    });
+  }
+
+
+
+  void correctSound() {
+    Flame.audio.play("assets/audio/correct.mp3");
+  }
+
+  void squared() {
+    setState(() {
+      _value += '\u00B2';
+    });
+  }
+
+  void factorial() {
+    setState(() {
+      _value += '!';
     });
   }
 
@@ -88,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _computation = mathEngine(_value);
       if (_computation == _goal) {
         _goal++;
+        correctSound();
         _clear();
       } else {
         if(_counter != 0) {

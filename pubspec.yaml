@@ -17,6 +17,9 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  audioplayers: ^0.13.0
+  path_provider: ^1.1.0
+  flame: ^0.15.1
   flutter:
     sdk: flutter
 
@@ -70,3 +73,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  assets:
+   - assets/audio/correct.mp3

@@ -2,8 +2,8 @@ import 'dart:collection';
 import 'dart:math';
 
 String postfix(String equation) {
-  var operatorPrecedenceInStack = {"(":0,"√":5,"x":4,"÷":4,"+":2,"-":2};
-  var operatorPrecedenceToStack = {"(":10,"√":6,"x":3,"÷":3,"+":1,"-":1}; //Out
+  var operatorPrecedenceInStack = {"(":0,"!":7,"²":5,"√":5,"x":4,"÷":4,"+":2,"-":2};
+  var operatorPrecedenceToStack = {"(":10,"!":8,"²":6,"√":6,"x":3,"÷":3,"+":1,"-":1}; //Out
   ListQueue operators = new ListQueue(); //Functioning as a queue
   ListQueue output = new ListQueue(); //Functioning as a stack
   while(equation.length > 0) {
@@ -82,7 +82,11 @@ int calculatePostfix(String equation) {
         case "÷":
           int t1 = terms.removeLast();
           int t2 = terms.removeLast();
-          terms.addLast(t1~/t2);
+          if (t1 < t2) {
+            terms.addLast(t2 ~/ t1);
+          } else {
+            terms.addLast(t1 ~/ t2);
+          }
           break;
         case "+":
           int t1 = terms.removeLast();
@@ -90,13 +94,25 @@ int calculatePostfix(String equation) {
           terms.addLast(t1+t2);
           break;
         case "-":
-          int t1 = terms.removeLast();
           int t2 = terms.removeLast();
-          terms.addLast(t2-t1);
+          int t1 = terms.removeLast();
+          if (t2 > t1) {
+            terms.addLast(t2 - t1);
+          }else {
+            terms.addLast(t1-t2);
+          }
           break;
         case "√":
           int t = terms.removeLast();
           terms.addLast(sqrt(t).toInt());
+          break;
+        case "²":
+          int t = terms.removeLast();
+          terms.addLast(t * t);
+          break;
+        case "!":
+          int t = terms.removeLast();
+          terms.addLast(factorial(t));
           break;
       }
 
@@ -107,9 +123,14 @@ int calculatePostfix(String equation) {
   return terms.removeFirst();
 }
 
+int factorial(int f) {
+  if (f == 0) {
+    return 1;
+  }
+  return f * factorial(f-1);
+}
+
 int mathEngine(String s) {
-  print(s);
   print(postfix(s));
-  print(calculatePostfix(postfix(s)));
   return calculatePostfix(postfix(s));
 }
