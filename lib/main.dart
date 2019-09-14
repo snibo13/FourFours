@@ -1,6 +1,4 @@
-//TODO: Add Factorial and Squared
 import 'package:flame/flame.dart';
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'MathEngine.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int _goal = 0;
   int _computation;
   String _alert = " ";
+
+  Color orange =  Color(0xffEE6E48);
+  Color darkGrey = Color(0xff565C5C);
+  Color lightGrey = Color(0xffCCD2C6);
+
   void _plus() {
     setState(() {
       _value+= "+";
@@ -59,9 +62,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void factorial() {
+  void _factorial() {
     setState(() {
       _value += '!';
+    });
+  }
+
+  void _exp() {
+    setState(() {
+      _value+= "^";
+    });
+  }
+
+  void _squared() {
+    setState(() {
+      _value += "²";
     });
   }
 
@@ -111,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _equals() {
     setState(() {
       _computation = mathEngine(_value);
-      if (_computation == _goal) {
+      if (_computation == _goal && _counter == 0) {
         _goal++;
         correctSound();
         _clear();
@@ -120,7 +135,6 @@ class _MyHomePageState extends State<MyHomePage> {
           _alert="You must use 4 fours";
           _value += "=$_computation";
         } else {
-
           _alert = "Try Again!";
           _value += "=$_computation";
         }
@@ -157,104 +171,117 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         backgroundColor: Color(0xffCED4CC),
         body: Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
-          child: Center(
-            child: Column(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
+            child: Center(
+                child: Column(
 //          mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text("Goal:"),
-                    Text('$_goal',
-                      style: Theme.of(context).textTheme.display2,),
-                  ],
-                ),
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Text("Goal:"),
+                          Text('$_goal',
+                            style: Theme.of(context).textTheme.display2,),
+                        ],
+                      ),
 
-                Container(
-                    color: Colors.transparent,
-                    child: Container(
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          child: Center(
-                            child: Text(
-                              '$_value',
-                              style: Theme.of(context).textTheme.display1,
-                              textAlign: TextAlign.center,
+                      Container(
+                          color: Colors.transparent,
+                          child: Container(
+                            child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: MediaQuery.of(context).size.height * 0.1,
+                                child: Center(
+                                  child: Text(
+                                    '$_value',
+                                    style: Theme.of(context).textTheme.display1,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                            ),
+                            decoration: BoxDecoration(
+                                color: Color(0xff8D9687),
+                                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04)
                             ),
                           )
+
                       ),
-                      decoration: BoxDecoration(
-                          color: Color(0xff8D9687),
-                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04)
+
+                      Text(
+                        "Fours Remaining: $_counter",
+                        textAlign: TextAlign.center,
                       ),
-                    )
-
-                ),
-
-                Text(
-                  "Fours Remaining: $_counter",
-                  textAlign: TextAlign.center,
-                ),
-
 
 //                Text('$_alert'),
-                SizedBox(
-                    height: 500,
-                    width: MediaQuery.of(context).size.width * 0.88,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Row(
-                            children: <Widget> [
-                              Expanded (
-                                  flex: 3,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(left: 10, right: 10),
-                                      child: RaisedButton(
-                                        color: Color(0xffEE6E48),
+                      SizedBox(
+                        height: 500,
+                        width: MediaQuery.of(context).size.width * 0.88,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                newButton("!", _factorial, lightGrey, darkGrey),
+                                newButton("^", _exp, lightGrey, darkGrey),
+                                newButton("²", _squared, lightGrey, darkGrey),
+                              ],
+                                mainAxisAlignment: MainAxisAlignment.spaceAround
+
+                            ),
+                            Row(
+                              children: <Widget>[
+                                newButton("+", _plus, lightGrey, darkGrey),
+                                newButton("-", _minus, lightGrey, darkGrey),
+                                newButton("<", _backspace, lightGrey, darkGrey),
+                              ],
+                                mainAxisAlignment: MainAxisAlignment.spaceAround
+
+                            ),
+                            Row(
+                                children: <Widget> [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                    child: RaisedButton(
+                                          color: Color(0xffEE6E48),
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                                          onPressed: _four, child: Text("4", style: TextStyle(fontSize: 25, color: Color(0xff565C5C))),padding: EdgeInsets.all(11.5),)),
-                              ),
-                              Expanded (
-                                  flex: 3,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(left: 10, right: 10),
-                                      child: RaisedButton(
-                                        color: Color(0xffEE6E48),
-                                        shape: RoundedRectangleBorder(borderRadius:
-                                        BorderRadius.circular(30)),
-                                        onPressed: _equals,
-                                        child: Text("=", style: TextStyle(fontSize: 28, color: Color(0xff565C5C)),),
-                                        padding: EdgeInsets.all(10),))
-                              ),
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly
+                                          onPressed: _four, child: Text("4", style: TextStyle(fontSize: 25, color: Color(0xff565C5C))),padding: EdgeInsets.all(11.5),),
+                                  ),
+                                  newButton("C", _clear, lightGrey, darkGrey)
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.spaceAround
+                            ),
+
+                            Row(
+                              children: <Widget>[
+                                newButton("x", _mult, lightGrey, darkGrey),
+                                newButton("÷", _div, lightGrey, darkGrey),
+                                newButton("√", _sqrt, lightGrey, darkGrey),
+
+                              ],
+                                mainAxisAlignment: MainAxisAlignment.spaceAround
+
+                            ),
+                            Row(
+                              children: <Widget>[
+                                newButton("(", _openParen, lightGrey, darkGrey),
+                                newButton(")", _closeParen, lightGrey, darkGrey),
+                                newButton("=", _equals, orange, darkGrey),
+                              ],
+                                mainAxisAlignment: MainAxisAlignment.spaceAround
+
+                            )
+                          ],
                         ),
-                        Row(children: <Widget>[
-                          RaisedButton(color: Color(0xffCCD2C6), shape: CircleBorder(), onPressed: _plus, child: Text("+", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                          RaisedButton(color: Color(0xffCCD2C6), shape: CircleBorder(), onPressed: _minus, child: Text("-", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                          RaisedButton(color: Color(0xffCCD2C6), shape: CircleBorder(), onPressed: _backspace, child: Text("DEL", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                        ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
-                        Row(children: <Widget>[
-                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _mult, child: Text("x", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _div, child: Text("\u00F7", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _clear, child: Text("C", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
+                      ),
 
-                        ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
-
-                        Row(children: <Widget>[
-                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _sqrt, child: Text("\u221a", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _openParen, child: Text("(" , style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                          RaisedButton(color: Color(0xffCCD2C6),shape: CircleBorder(), onPressed: _closeParen, child: Text(")", style: TextStyle(fontSize: 24, color: Color(0xff565C5C)),), padding: EdgeInsets.all(15),),
-                        ],mainAxisAlignment: MainAxisAlignment.spaceEvenly,),
-                      ],
-                    )
+                    ]
                 )
-              ],
-            ),
-          ),
+            )
         )
     );
+  }
+
+  Widget newButton(String text, Function f, Color backgroundColor, Color textColor) {
+    return RaisedButton(color: backgroundColor,shape: CircleBorder(), onPressed: f, child: Text("$text", style: TextStyle(fontSize: 24, color: textColor),), padding: EdgeInsets.all(15),);
+
   }
 }
