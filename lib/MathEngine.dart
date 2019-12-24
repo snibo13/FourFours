@@ -8,7 +8,6 @@ String postfix(String equation) {
   ListQueue output = new ListQueue(); //Functioning as a stack
   equation = equation.replaceAll(" ","");
   while(equation.length > 0) {
-    print(equation);
     //Adding double digit functionality
     int numIndex = 0;
     //If the first character is a number
@@ -22,13 +21,11 @@ String postfix(String equation) {
       numIndex = 1;
     }
     if (numIndex != 0) {
-      print(equation.substring(0,numIndex));
       //Queue push
       output.addLast(equation.substring(0,numIndex));
       //Remove the first string from the equation (SIDE EFFECT)
       equation = equation.substring(numIndex);
     } else {
-      print(equation.substring(0,1));
       //For the first operator
       if (operators.isEmpty) {
         //Stack push
@@ -36,13 +33,10 @@ String postfix(String equation) {
         //Remove the first string from the equation (SIDE EFFECT)
         equation = equation.substring(1);
       } else { //If not the first operator
-        //If its a closing parenthese
+        //If its a closing parenthesis
         if(equation.substring(0,1) == ")") {
-          print(operators);
           do {
             output.addLast(operators.removeFirst());
-            print("out $output");
-            print("Ops $operators");
           }
           while (operators.first != "(");
           operators.removeFirst();
@@ -85,7 +79,6 @@ double calculatePostfix(String equation) {
   ListQueue terms = new ListQueue(); //Functioning as a stack
   int symbolIndex = 0;
   equation = equation.replaceAll(" ","");
-  print(equation);
   //Compensates for numbers of variable length
   while(equation.length > 0) {
     //Three digits only possible with decimals
@@ -114,9 +107,9 @@ double calculatePostfix(String equation) {
           double t1 = terms.removeLast();
           double t2 = terms.removeLast();
           if (t1 < t2) {
-            terms.addLast(t2 ~/ t1);
+            terms.addLast(t2 / t1);
           } else {
-            terms.addLast(t1 ~/ t2);
+            terms.addLast(t1 / t2);
           }
           break;
         case "+":
@@ -156,7 +149,7 @@ double calculatePostfix(String equation) {
 
 double factorial(double f) {
   if (f == 0) {
-    return 1;
+    return 1.0;
   }
   return f * factorial(f-1);
 }
