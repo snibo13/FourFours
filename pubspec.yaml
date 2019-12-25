@@ -21,6 +21,7 @@ dependencies:
   path_provider: ^1.1.0
   shared_preferences: ^0.5.6
   flame: ^0.15.1
+  splashscreen: ^1.2.0
   flutter:
     sdk: flutter
 

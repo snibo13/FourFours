@@ -1,76 +1,25 @@
+import 'dart:async';
+
 import 'package:flame/flame.dart';
-import 'package:flutter/material.dart';
-import 'package:four/app_state_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'MathEngine.dart';
 import 'package:flutter/services.dart';
-import 'app_state.dart';
-import 'app_state_container.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:four/MathEngine.dart';
+import 'package:splashscreen/splashscreen.dart';
+
 void main() => runApp(MyApp());
 
-void loadAudio() {
-  Flame.audio.load("correct.mp3");
-}
-
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  AppState state;
-
-  Widget get _pageToDisplay {
-    if (state.isLoading) {
-      return _loadingView;
-    } else {
-      return _homeView;
-    }
-  }
-
-  Widget get _loadingView {
-    return new Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget get _homeView {
-    return MyApp();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    var container = AppStateContainer.of(context);
-    state = container.state;
-    Widget _body = _pageToDisplay;
-    return MaterialApp(
-      title: "Four Fours",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: "Four Fours"),
-    );
-  }
-}
-
-
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    loadAudio();
-
-    return AppStateContainer(
-        child: MaterialApp(
-          title: 'Four Fours',
+    return MaterialApp(
+      title: 'Four Fours',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-          home: MyHomePage(title: 'Four Fours'),
-        )
+      home: MyHomePage(title: 'Four Fours'),
+
     );
   }
 }
@@ -90,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _score;
   int _computation;
   Widget _body;
-  String _alert = "";
+  bool _hide = false;
   Color orange =  Color(0xffEE6E48);
   Color darkGrey = Color(0xff565C5C);
   Color lightGrey = Color(0xffCCD2C6);
@@ -184,6 +133,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _addChar(String char) {
+    setState(() {
+      _value += char;
+    });
+  }
+
   void _equals() {
     setState(() {
       _computation = mathEngine(_value).round();
@@ -194,10 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _clear();
       } else {
         if(_counter != 0) {
-          _alert="You must use 4 fours";
           _value += "=$_computation";
         } else {
-          _alert = "Try Again!";
           _value += "=$_computation";
         }
       }
@@ -206,9 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _four() {
     setState(() {
-      if (_counter == 0) {
-        _alert = "Only 4 Fours allowed!!";
-      } else {
+      if (!(_counter == 0)) {
         _value += "4";
         _counter--;
       }
@@ -225,16 +176,44 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void hide() {
+    bool flag = true;
+    setState(() {
+      while (flag) {
+        if (!(_score == null)) {
+          _hide = true;
+          break;
+        }
+      }
+      _hide = true;
+    });
+  }
 
+  void startTimer(int t) {
+    Timer(new Duration(seconds: t), hide);
+  }
 
   @override
   Widget build(BuildContext context) {
     Flame.audio.load('correct.mp3');
     _loadPage();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return Scaffold(
-        backgroundColor: Color(0xffCED4CC),
-        body: _body
+    startTimer(t); //TODO: Assign T value
+    return new AnimatedOpacity(
+        opacity: _hide ? 0.0 : 1.0,
+        duration: Duration(milliseconds: 500),
+        child: SplashScreen(
+            seconds: 14,
+            navigateAfterSeconds: new Scaffold(
+                backgroundColor: Color(0xffCED4CC),
+                body: _body
+            ),
+            image: new Image.asset('logo.png'),
+            backgroundColor: lightGrey,
+            styleTextUnderTheLoader: new TextStyle(),
+            photoSize: 100.0,
+            loaderColor: orange
+        )
     );
   }
 
@@ -386,6 +365,5 @@ class _MyHomePageState extends State<MyHomePage> {
       await prefs.setInt('score', score);
       await prefs.commit();
     }
-
   }
 }
