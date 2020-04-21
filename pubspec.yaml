@@ -77,3 +77,4 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
    - assets/audio/correct.mp3
+   - assets/images/logo.gif
