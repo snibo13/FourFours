@@ -198,12 +198,12 @@ class _MyHomePageState extends State<MyHomePage> {
     Flame.audio.load('correct.mp3');
     _loadPage();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    startTimer(t); //TODO: Assign T value
+    startTimer(4); //TODO: Assign T value
     return new AnimatedOpacity(
         opacity: _hide ? 0.0 : 1.0,
         duration: Duration(milliseconds: 500),
         child: SplashScreen(
-            seconds: 14,
+            seconds: 8,
             navigateAfterSeconds: new Scaffold(
                 backgroundColor: Color(0xffCED4CC),
                 body: _body

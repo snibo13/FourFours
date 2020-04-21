@@ -39,16 +39,21 @@ class _OperationCardState extends State<OperationCard> {
 }
 
 
-class HelpScreen extends StatelessWidget {
-  final List<Operation> operations;
+class HelpScreen extends StatefulWidget {
+  2
 
-  HelpScreen(operations);
+  HelpScreen();
+
+  @override
+  _HelpScreenState createState() => _HelpScreenState();
+}
+
+class _HelpScreenState extends State<HelpScreen> {
 
   @override
   Widget build(BuildContext context) {
     return _buildList(context);
   }
-
 
   ListView _buildList(context) {
     return ListView.builder(
@@ -61,20 +66,3 @@ class HelpScreen extends StatelessWidget {
 }
 
 
-List<Operation> operations = [
-  new Operation(title: "Rules", description: "You must use four fours to reach "
-      "your goal. See how far you can get"),
-  new Operation(title: "Hints"),
-  new Operation(
-      title: "squared (²) ", description: 'This operation squares the '
-      'input.\nExample: 4² = 16'),
-  new Operation(
-      title: "factorial (!)", description: 'This operation multiplies '
-      'all the integers between the input and 1.\nExample: 4! = 4 * 3 * 2 * 1 = 24'),
-  new Operation(
-      title: "Order of Operations", description: 'Order of operations '
-      'determines the sequence that operations are evaluated. The sequence '
-      'goes:\nParentheses (,)\nExponents √,²,^\n Multiplication and Division\n'
-      'Addition and Subtraction')
-
-]
