@@ -12,36 +12,69 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-          title: 'Four Fours',
+      title: 'Four Fours',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-          home: MyHomePage(title: 'Four Fours'),
+      home: Menu()
+//      home: MyHomePage(title: 'Four Fours'),
     );
   }
 }
 
+class Menu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color(0xffCED4CC),
+      child: Column(
+        children: <Widget>[
+          FlatButton(onPressed: null, child: Text("Play")),
+          FlatButton(onPressed: null, child: Text("Arcade")),
+          FlatButton(onPressed: null, child: Text("Help")),
+          FlatButton(onPressed: null, child: Text("About")),
+        ],
+      ),
+    );
+  }
+}
+
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        color: Color(0xffCED4CC),
+        child: Center(
+          child:  Image(image: AssetImage("assets/images/logo.gif"), height: 200.0),
+        )
+    );
+  }
+}
+
+
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({
+    Key key,
+    this.title
+  }): super(key: key);
   final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State < MyHomePage > {
   int _counter = 4;
   String _value = "";
   int _goal = 0;
   int _score;
   int _computation;
-  Widget _body;
-  bool _hide = false;
+
   String _alert = "";
-  Color orange =  Color(0xffEE6E48);
+  Color orange = Color(0xffEE6E48);
   Color darkGrey = Color(0xff565C5C);
   Color lightGrey = Color(0xffCCD2C6);
   Timer _timer;
@@ -49,12 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _body = loadingPage();
+//    _body = loadingPage();
+//    _body = gamePage();
   }
 
   void _plus() {
     setState(() {
-      _value+= "+";
+      _value += "+";
     });
   }
 
@@ -76,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _exp() {
     setState(() {
-      _value+= "^";
+      _value += "^";
     });
   }
 
@@ -88,19 +122,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _minus() {
     setState(() {
-      _value+="-";
+      _value += "-";
     });
   }
 
   void _div() {
     setState(() {
-      _value+="\u00F7";
+      _value += "\u00F7";
     });
   }
 
   void _mult() {
     setState(() {
-      _value+="x";
+      _value += "x";
     });
   }
 
@@ -112,13 +146,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _openParen() {
     setState(() {
-      _value+="(";
+      _value += "(";
     });
   }
 
   void _closeParen() {
     setState(() {
-      _value+=")";
+      _value += ")";
     });
   }
 
@@ -144,8 +178,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _updateScore(_goal);
         _clear();
       } else {
-        if(_counter != 0) {
-          _alert="You must use 4 fours";
+        if (_counter != 0) {
+          _alert = "You must use 4 fours";
           _value += "=$_computation";
         } else {
           _alert = "Try Again!";
@@ -169,62 +203,58 @@ class _MyHomePageState extends State<MyHomePage> {
   void _backspace() {
     setState(() {
       int len = _value.length;
-      if (int.tryParse(_value.substring(len-1)) != null) {
+      if (int.tryParse(_value.substring(len - 1)) != null) {
         _counter++;
       }
-      _value = _value.substring(0, len-1);
+      _value = _value.substring(0, len - 1);
     });
   }
 
-  void hide() {
-    setState(() {
-      while(true) {
-        if (!(_score == null)) {
-          _hide = false;
+  Future<bool> _minTime = Future<bool>.delayed(
+      Duration(seconds: 4),
+      () => true
+  );
 
-          break;
-        } else {
-          _hide = true;
-        }
-      }
-    });
-  }
-
-  void startTimer(int t) {
-    _timer = Timer(new Duration(seconds: t), hide);
-  }
 
 
   @override
   Widget build(BuildContext context) {
     Flame.audio.load('correct.mp3');
-    _loadPage();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return new Scaffold(
+    _loadPage();
+    return FutureBuilder<bool>(
+      future: _minTime,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        Widget _body;
+        if (snapshot.hasData) {
+          _body = gamePage();
+        }
+        else {
+          _body = new Container(
+              color: Color(0xffCED4CC),
+              child: Center(
+                child:  Image(image: AssetImage("assets/images/logo.gif"), height: 200.0),
+              )
+          );
+        }
+        return new Scaffold(
           backgroundColor: Color(0xffCED4CC),
           body: _body
+        );
+      },
     );
-      startTimer(4);
-//      return new AnimatedOpacity(
-//        opacity: _hide ? 0.0 : 1.0,
-//        duration: Duration(milliseconds: 500),
-//        child: SplashScreen(
-//          seconds: 4,
-//          navigateAfterSeconds: new Scaffold(
-//          backgroundColor: Color(0xffCED4CC),
-//            body: _body
-//          ),
-//          image: new Image(image: AssetImage("assets/images/logo.gif")),
-//          backgroundColor: Color(0xffCED4CC),
-//          loaderColor: orange,
-//        )
-//      );
+//    startTimer(4);
+    //return new Scaffold(
+      //backgroundColor: Color(0xffCED4CC),
+      //body: gamePage(),
+    //);
+
   }
 
   Widget genRow(String t1, Function f1, String t2, Function f2, String t3,
       Function f3) {
     return Row(
-      children: <Widget>[
+      children: < Widget > [
         newButton(t1, f1, lightGrey, darkGrey),
         newButton(t2, f2, lightGrey, darkGrey),
         newButton(t3, f3, lightGrey, darkGrey),
@@ -239,20 +269,11 @@ class _MyHomePageState extends State<MyHomePage> {
       shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(18.0)),
       onPressed: f,
-      child: Text("$text", style: TextStyle(fontSize: 24, color: textColor),),
-      padding: EdgeInsets.all(15),);
+      child: Text("$text", style: TextStyle(fontSize: 24, color: textColor), ),
+      padding: EdgeInsets.all(15), );
   }
 
-  Widget loadingPage() {
-    return new Center(
-      child: Column(
-        children: <Widget>[
-          CircularProgressIndicator(),
-//          Image(image: AssetImage("assets/images/logo.gif")),
-        ],
-      )
-    );
-  }
+
 
   Widget gamePage() {
     return Padding(
@@ -262,25 +283,25 @@ class _MyHomePageState extends State<MyHomePage> {
             .height * 0.08),
         child: Center(
             child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+              //          mainAxisAlignment: MainAxisAlignment.center,
+                children: < Widget > [
                   Row(
-                    children: <Widget>[
+                    children: < Widget > [
                       Column(
-                        children: <Widget>[
+                        children: < Widget > [
                           Text("Goal:"),
                           Text('$_goal',
-                            style: Theme.of(context).textTheme.display2,),
+                            style: Theme.of(context).textTheme.display2, ),
                         ],
                       ),
                       Column(
-                        children: <Widget>[
+                        children: < Widget > [
                           Text("Highscore:"),
                           Text('$_score',
                             style: Theme
                                 .of(context)
                                 .textTheme
-                                .display2,),
+                                .display2, ),
                         ],
                       ),
                     ],
@@ -327,7 +348,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.center,
                   ),
 
-//                Text('$_alert'),
+                  //                Text('$_alert'),
                   SizedBox(
                     height: 500,
                     width: MediaQuery
@@ -336,7 +357,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         .width * 0.88,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
+                      children: < Widget > [
                         genRow("²", _squared, ".", _decimal, "<", _backspace),
                         genRow("+", _plus, "-", _minus, "(", _openParen),
                         genRow("4", _four, "=", _equals, "C", _clear),
@@ -354,9 +375,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _loadPage() async {
     await _getScore();
-      setState(() {
-        _body = gamePage();
-    });
 
   }
 
