@@ -1,76 +1,25 @@
+import 'dart:async';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
-import 'package:four/app_state_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'MathEngine.dart';
 import 'package:flutter/services.dart';
-import 'app_state.dart';
-import 'app_state_container.dart';
+import 'package:splashscreen/splashscreen.dart';
+
 void main() => runApp(MyApp());
-
-void loadAudio() {
-  Flame.audio.load("correct.mp3");
-}
-
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  AppState state;
-
-  Widget get _pageToDisplay {
-    if (state.isLoading) {
-      return _loadingView;
-    } else {
-      return _homeView;
-    }
-  }
-
-  Widget get _loadingView {
-    return new Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget get _homeView {
-    return MyApp();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    var container = AppStateContainer.of(context);
-    state = container.state;
-    Widget _body = _pageToDisplay;
-    return MaterialApp(
-      title: "Four Fours",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: "Four Fours"),
-    );
-  }
-}
-
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    loadAudio();
 
-    return AppStateContainer(
-        child: MaterialApp(
+    return MaterialApp(
           title: 'Four Fours',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
           home: MyHomePage(title: 'Four Fours'),
-        )
     );
   }
 }
@@ -90,10 +39,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _score;
   int _computation;
   Widget _body;
+  bool _hide = false;
   String _alert = "";
   Color orange =  Color(0xffEE6E48);
   Color darkGrey = Color(0xff565C5C);
   Color lightGrey = Color(0xffCCD2C6);
+  Timer _timer;
 
   @override
   void initState() {
@@ -225,6 +176,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void hide() {
+    setState(() {
+      while(true) {
+        if (!(_score == null)) {
+          _hide = false;
+
+          break;
+        } else {
+          _hide = true;
+        }
+      }
+    });
+  }
+
+  void startTimer(int t) {
+    _timer = Timer(new Duration(seconds: t), hide);
+  }
 
 
   @override
@@ -232,10 +200,25 @@ class _MyHomePageState extends State<MyHomePage> {
     Flame.audio.load('correct.mp3');
     _loadPage();
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return Scaffold(
-        backgroundColor: Color(0xffCED4CC),
-        body: _body
-    );
+//    return new Scaffold(
+//          backgroundColor: Color(0xffCED4CC),
+//          body: _body
+//    );
+      startTimer(4);
+      return new AnimatedOpacity(
+        opacity: _hide ? 0.0 : 1.0,
+        duration: Duration(milliseconds: 500),
+        child: SplashScreen(
+          seconds: 4,
+          navigateAfterSeconds: new Scaffold(
+          backgroundColor: Color(0xffCED4CC),
+            body: _body
+          ),
+          image: new Image(image: AssetImage("assets/images/logo.gif")),
+          backgroundColor: Color(0xffCED4CC),
+          loaderColor: orange,
+        )
+      );
   }
 
   Widget genRow(String t1, Function f1, String t2, Function f2, String t3,
@@ -262,7 +245,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget loadingPage() {
     return new Center(
-      child: CircularProgressIndicator(),
+      child: Column(
+        children: <Widget>[
+          CircularProgressIndicator(),
+//          Image(image: AssetImage("assets/images/logo.gif")),
+        ],
+      )
     );
   }
 
@@ -366,9 +354,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _loadPage() async {
     await _getScore();
-    setState(() {
-      _body = gamePage();
+      setState(() {
+        _body = gamePage();
     });
+
   }
 
   _getScore() async {
@@ -386,6 +375,11 @@ class _MyHomePageState extends State<MyHomePage> {
       await prefs.setInt('score', score);
       await prefs.commit();
     }
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 }

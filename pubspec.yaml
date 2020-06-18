@@ -20,6 +20,7 @@ dependencies:
   audioplayers: ^0.13.0
   path_provider: ^1.1.0
   shared_preferences: ^0.5.6
+  splashscreen: ^1.2.0
   flame: ^0.15.1
   flutter:
     sdk: flutter
@@ -76,3 +77,4 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
    - assets/audio/correct.mp3
+   - assets/images/logo.gif
