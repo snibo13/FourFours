@@ -200,25 +200,25 @@ class _MyHomePageState extends State<MyHomePage> {
     Flame.audio.load('correct.mp3');
     _loadPage();
     SystemChrome.setEnabledSystemUIOverlays([]);
-//    return new Scaffold(
-//          backgroundColor: Color(0xffCED4CC),
-//          body: _body
-//    );
+    return new Scaffold(
+          backgroundColor: Color(0xffCED4CC),
+          body: _body
+    );
       startTimer(4);
-      return new AnimatedOpacity(
-        opacity: _hide ? 0.0 : 1.0,
-        duration: Duration(milliseconds: 500),
-        child: SplashScreen(
-          seconds: 4,
-          navigateAfterSeconds: new Scaffold(
-          backgroundColor: Color(0xffCED4CC),
-            body: _body
-          ),
-          image: new Image(image: AssetImage("assets/images/logo.gif")),
-          backgroundColor: Color(0xffCED4CC),
-          loaderColor: orange,
-        )
-      );
+//      return new AnimatedOpacity(
+//        opacity: _hide ? 0.0 : 1.0,
+//        duration: Duration(milliseconds: 500),
+//        child: SplashScreen(
+//          seconds: 4,
+//          navigateAfterSeconds: new Scaffold(
+//          backgroundColor: Color(0xffCED4CC),
+//            body: _body
+//          ),
+//          image: new Image(image: AssetImage("assets/images/logo.gif")),
+//          backgroundColor: Color(0xffCED4CC),
+//          loaderColor: orange,
+//        )
+//      );
   }
 
   Widget genRow(String t1, Function f1, String t2, Function f2, String t3,
