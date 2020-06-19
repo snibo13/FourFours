@@ -78,3 +78,4 @@ flutter:
   assets:
    - assets/audio/correct.mp3
    - assets/images/logo.gif
+   - assets/images/logo.png

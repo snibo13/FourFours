@@ -57,6 +57,7 @@ String postfix(String equation) {
         if (equation.substring(0, 1) == ")") {
           do {
             output.addLast(operators.removeFirst());
+            output.addLast(" ");
           }
           while (operators.first != "(");
           operators.removeFirst();
@@ -94,7 +95,6 @@ String postfix(String equation) {
   while (output.isNotEmpty) {
     out += output.removeFirst();
   }
-  print(out);
   return out;
 }
 
@@ -107,7 +107,6 @@ double calculatePostfix(String equation) {
   //Convert equation to array
   List < String > eq = equation.split(" ");
   ListQueue < String > operations = new ListQueue < String > ();
-
   for (int i = 0; i < eq.length; i++) {
     var el = eq[i];
     if (double.tryParse(el) != null) {
@@ -122,52 +121,49 @@ double calculatePostfix(String equation) {
   int iterCount = operations.length;
 
   for (int j = 0; j < iterCount; j++) {
-
-
     var symbol = operations.removeFirst();
     switch (symbol) {
       case "x":
         double t1 = terms.removeLast();
         double t2 = terms.removeLast();
-        terms.addLast(t1 * t2);
+        terms.addFirst(t1 * t2);
         break;
       case "÷":
         double t1 = terms.removeLast();
         double t2 = terms.removeLast();
         if (t1 < t2) {
-          terms.addLast(t2 / t1);
+          terms.addFirst(t2 / t1);
         } else {
-          terms.addLast(t1 / t2);
+          terms.addFirst(t1 / t2);
         }
         break;
       case "+":
         double t1 = terms.removeLast();
         double t2 = terms.removeLast();
-        terms.addLast(t1 + t2);
+        terms.addFirst(t1 + t2);
         break;
       case "-":
         double t2 = terms.removeLast();
         double t1 = terms.removeLast();
         if (t2 > t1) {
-          terms.addLast(t2 - t1);
+          terms.addFirst(t2 - t1);
         } else {
-          terms.addLast(t1 - t2);
+          terms.addFirst(t1 - t2);
         }
         break;
       case "√":
         double t = terms.removeLast();
-        terms.addLast(sqrt(t).toDouble());
+        terms.addFirst(sqrt(t).toDouble());
         break;
       case "²":
         double t = terms.removeLast();
-        terms.addLast(t * t);
+        terms.addFirst(t * t);
         break;
       case "!":
         double t = terms.removeLast();
-        terms.addLast(factorial(t));
+        terms.addFirst(factorial(t));
         break;
     }
-
   }
   return terms.removeLast();
 
@@ -187,5 +183,5 @@ double mathEngine(String s) {
 
 
 void main() {
-  print(mathEngine("22+22+4+78"));
+  print(mathEngine("(4+4)-(4+4)"));
 }

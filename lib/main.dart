@@ -1,12 +1,71 @@
 import 'dart:async';
 import 'package:flame/flame.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'MathEngine.dart';
 import 'package:flutter/services.dart';
-import 'package:splashscreen/splashscreen.dart';
 
 void main() => runApp(MyApp());
+
+Future<bool> _minTime = Future<bool>.delayed(
+    Duration(seconds: 2),
+        () => true
+);
+
+Color textColor = Color(0xff565C5C);
+Color backgroundColor =  Color(0xffCCD2C6);
+
+
+Widget newButton(String text, Function f) {
+  return RaisedButton(
+    color: backgroundColor,
+    shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(18.0)),
+    onPressed: f,
+    child: Text("$text", style: TextStyle(fontSize: 24, color: textColor), ),
+    padding: EdgeInsets.all(15),
+    animationDuration: Duration(microseconds: 0),
+  );
+}
+
+Widget helpElement(String head, String content) {
+  return Card(
+      color: Color(0xffCED4CC),
+    child: ListTile (
+      title: Text("$head", style: TextStyle(fontSize: 24),),
+      subtitle: Text("$content", softWrap: true, style: TextStyle(fontSize: 18),),
+    )
+  );
+}
+
+class Help extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body:Container(
+        color: Color(0xffCED4CC),
+        child: ListView(
+          children: <Widget>[
+            Center(
+                child: Text("Help", style: TextStyle(fontSize: 48, color: textColor))
+            ),
+            helpElement("+", "Addition"),
+            helpElement("-", "Subtraction"),
+            helpElement("x", "Multiplication"),
+            helpElement("÷", "Division"),
+            helpElement("<", "Backspace"),
+            helpElement("!", "The ! or factorial is a single number operation. Unlike addition where you need two numbers, factorial only needs one. n! is equal to all the numbers from 1 to n multiplied. For example, 4! = 1 x 2 x 3 x 4 = 24"),
+            helpElement("²", "\"²\" or the squared operations is a single number operation. Unlike subtraction where you need two numbers, squaring only needs one. Squaring is part of a type of operations called exponentials. n² is equal to the number times it self. For example, 4² = 4 x 4 = 16. In general, an exponential multiplies the number by itself however many times the little number says. For example, 4³ = 4 x 4 x 4 = 64."),
+            helpElement("^", "The \"^\" is the symbol for exponentials. It is a lot simpler to write a carat then a little number for computers, so we use the carat. The number after the carat works just like the little number. For example, 4^2 = 4² = 4 x 4 = 16 and 4^3 = 4³ = 4 x 4 x 4 = 64."),
+            helpElement("√", "The √ or square root symbol is the opposite of the ² symbol. Unlike multiplication where you need two numbers, the square root only needs one. The √ asks what number can be multiplied by itself to equal n. For example √4 = 2 because 2² = 2 x 2  = 4")
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -18,7 +77,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Menu()
+      home: Menu(),
+      routes: {
+        'Play': (BuildContext context) => MyHomePage(gameType: 1),
+        'Arcade': (BuildContext context) => MyHomePage(gameType: 2),
+        'Help': (BuildContext context) => Help(),
+      },
 //      home: MyHomePage(title: 'Four Fours'),
     );
   }
@@ -27,18 +91,51 @@ class MyApp extends StatelessWidget {
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xffCED4CC),
-      child: Column(
-        children: <Widget>[
-          FlatButton(onPressed: null, child: Text("Play")),
-          FlatButton(onPressed: null, child: Text("Arcade")),
-          FlatButton(onPressed: null, child: Text("Help")),
-          FlatButton(onPressed: null, child: Text("About")),
-        ],
-      ),
-    );
-  }
+    return FutureBuilder<bool>(
+        future: _minTime,
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+      Widget _body;
+      if (snapshot.hasData) {
+        _body = Container(
+          color: Color(0xffCED4CC),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Image(image: AssetImage("assets/images/logo.png"), height: 200.0),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  newButton("Play", () =>
+                      Navigator.of(context).pushNamed('Play')
+                  ),
+                  newButton("Arcade", () =>
+                      Navigator.of(context).pushNamed('Arcade')
+                  ),
+                  newButton("Learn", () => {
+                    Navigator.of(context).pushNamed('Help')
+                  }),
+
+
+
+                ],
+              )
+            ],
+          ),
+        );
+      } else {
+        _body = new Scaffold (
+          backgroundColor: Color(0xffCED4CC),
+         body: Container(
+            color: Color(0xffCED4CC),
+            child: Center(
+              child:  Image(image: AssetImage("assets/images/logo.gif"), height: 200.0),
+            )
+           )
+          );
+      }
+      return _body;
+  });
+}
 }
 
 
@@ -58,9 +155,10 @@ class LoadingScreen extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({
     Key key,
-    this.title
+    this.gameType
   }): super(key: key);
-  final String title;
+
+  final int gameType;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -73,17 +171,13 @@ class _MyHomePageState extends State < MyHomePage > {
   int _score;
   int _computation;
 
-  String _alert = "";
   Color orange = Color(0xffEE6E48);
   Color darkGrey = Color(0xff565C5C);
   Color lightGrey = Color(0xffCCD2C6);
-  Timer _timer;
 
   @override
   void initState() {
     super.initState();
-//    _body = loadingPage();
-//    _body = gamePage();
   }
 
   void _plus() {
@@ -179,10 +273,8 @@ class _MyHomePageState extends State < MyHomePage > {
         _clear();
       } else {
         if (_counter != 0) {
-          _alert = "You must use 4 fours";
           _value += "=$_computation";
         } else {
-          _alert = "Try Again!";
           _value += "=$_computation";
         }
       }
@@ -192,7 +284,6 @@ class _MyHomePageState extends State < MyHomePage > {
   void _four() {
     setState(() {
       if (_counter == 0) {
-        _alert = "Only 4 Fours allowed!!";
       } else {
         _value += "4";
         _counter--;
@@ -210,10 +301,7 @@ class _MyHomePageState extends State < MyHomePage > {
     });
   }
 
-  Future<bool> _minTime = Future<bool>.delayed(
-      Duration(seconds: 4),
-      () => true
-  );
+
 
 
 
@@ -265,12 +353,15 @@ class _MyHomePageState extends State < MyHomePage > {
 
   Widget newButton(String text, Function f, Color backgroundColor,
       Color textColor) {
-    return RaisedButton(color: backgroundColor,
+    return RaisedButton(
+      color: backgroundColor,
       shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(18.0)),
       onPressed: f,
       child: Text("$text", style: TextStyle(fontSize: 24, color: textColor), ),
-      padding: EdgeInsets.all(15), );
+      padding: EdgeInsets.all(15),
+      animationDuration: Duration(microseconds: 0),
+    );
   }
 
 
@@ -375,7 +466,9 @@ class _MyHomePageState extends State < MyHomePage > {
 
   _loadPage() async {
     await _getScore();
-
+    if (widget.gameType == 1) { //Normal
+     _goal = _score + 1;
+    }
   }
 
   _getScore() async {
@@ -398,6 +491,5 @@ class _MyHomePageState extends State < MyHomePage > {
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
   }
 }
