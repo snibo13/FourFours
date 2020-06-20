@@ -5,17 +5,52 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'MathEngine.dart';
 import 'package:flutter/services.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 void main() => runApp(MyApp());
 
 Future<bool> _minTime = Future<bool>.delayed(
-    Duration(seconds: 2),
+    Duration(seconds: 4),
         () => true
 );
 
 Color textColor = Color(0xff565C5C);
 Color backgroundColor =  Color(0xffCCD2C6);
 
+
+class About extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+
+                  Text("Created by Sidney Nimako"),
+                  FlatButton(
+                    child: Text("snibo.me", style: TextStyle(decoration: TextDecoration.underline),),
+                    onPressed: () => _launchSite("http://snibo.me"),
+                  ),
+            FlatButton(
+              child: Text("Support me", style: TextStyle(decoration: TextDecoration.underline)),
+              onPressed: () => _launchSite("https://www.paypal.me/snibo/4444"),
+            )
+
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _launchSite(String url) async {
+
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw "Cannot open URL";
+  }
+}
 
 Widget newButton(String text, Function f) {
   return RaisedButton(
@@ -25,17 +60,21 @@ Widget newButton(String text, Function f) {
     onPressed: f,
     child: Text("$text", style: TextStyle(fontSize: 24, color: textColor), ),
     padding: EdgeInsets.all(15),
-    animationDuration: Duration(microseconds: 0),
+    animationDuration: Duration(microseconds: 1),
   );
 }
 
 Widget helpElement(String head, String content) {
-  return Card(
-      color: Color(0xffCED4CC),
-    child: ListTile (
-      title: Text("$head", style: TextStyle(fontSize: 24),),
-      subtitle: Text("$content", softWrap: true, style: TextStyle(fontSize: 18),),
-    )
+  return Padding(
+    padding: EdgeInsets.all(15.0),
+      child: Card(
+          elevation: 0.0,
+          color: Color(0xffCED4CC),
+          child: ListTile (
+            title: Text("$head", style: TextStyle(fontSize: 24),),
+            subtitle: Text("$content", softWrap: true, style: TextStyle(fontSize: 18),),
+          )
+      ),
   );
 }
 
@@ -48,17 +87,25 @@ class Help extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             Center(
-                child: Text("Help", style: TextStyle(fontSize: 48, color: textColor))
+                child: Padding(
+            padding: EdgeInsets.all(15.0),
+        child: Text("Learn", style: TextStyle(fontSize: 48, color: textColor)),
+        )
             ),
-            helpElement("+", "Addition"),
-            helpElement("-", "Subtraction"),
-            helpElement("x", "Multiplication"),
-            helpElement("÷", "Division"),
-            helpElement("<", "Backspace"),
-            helpElement("!", "The ! or factorial is a single number operation. Unlike addition where you need two numbers, factorial only needs one. n! is equal to all the numbers from 1 to n multiplied. For example, 4! = 1 x 2 x 3 x 4 = 24"),
-            helpElement("²", "\"²\" or the squared operations is a single number operation. Unlike subtraction where you need two numbers, squaring only needs one. Squaring is part of a type of operations called exponentials. n² is equal to the number times it self. For example, 4² = 4 x 4 = 16. In general, an exponential multiplies the number by itself however many times the little number says. For example, 4³ = 4 x 4 x 4 = 64."),
-            helpElement("^", "The \"^\" is the symbol for exponentials. It is a lot simpler to write a carat then a little number for computers, so we use the carat. The number after the carat works just like the little number. For example, 4^2 = 4² = 4 x 4 = 16 and 4^3 = 4³ = 4 x 4 x 4 = 64."),
-            helpElement("√", "The √ or square root symbol is the opposite of the ² symbol. Unlike multiplication where you need two numbers, the square root only needs one. The √ asks what number can be multiplied by itself to equal n. For example √4 = 2 because 2² = 2 x 2  = 4")
+
+//            Padding(
+//              padding: EdgeInsets.symmetric(vertical: 7.5),
+//              child: Text("Operations", style: TextStyle(fontSize: 36, color: textColor),),
+//            ),
+//            helpElement("+", "Addition"),
+//            helpElement("-", "Subtraction"),
+//            helpElement("x", "Multiplication"),
+//            helpElement("÷", "Division"),
+//            helpElement("<", "Backspace"),
+            helpElement("!", "The ! or factorial is a single number operation.\nUnlike addition where you need two numbers, factorial only needs one.\n n! is equal to all the numbers from 1 to n multiplied.\n For example, 4! = 1 x 2 x 3 x 4 = 24"),
+            helpElement("²", "\"²\" or the squared operations is a single number operation.\nUnlike subtraction where you need two numbers, squaring only needs one.\nSquaring is part of a type of operations called exponentials.\nn² is equal to the number times it self.\nFor example, 4² = 4 x 4 = 16.\nIn general, an exponential multiplies the number by itself however many times the little number says.\nFor example, 4³ = 4 x 4 x 4 = 64."),
+            helpElement("^", "The \"^\" is the symbol for exponentials.\nIt is a lot simpler to write a carat then a little number for computers, so we use the carat.\nThe number after the carat works just like the little number.\nFor example, 4^2 = 4² = 4 x 4 = 16 and 4^3 = 4³ = 4 x 4 x 4 = 64."),
+            helpElement("√", "The √ or square root symbol is the opposite of the ² symbol.\nUnlike multiplication where you need two numbers, the square root only needs one.\nThe √ asks what number can be multiplied by itself to equal n.\nFor example √4 = 2 because 2² = 2 x 2  = 4")
           ],
         ),
       ),
@@ -82,6 +129,7 @@ class MyApp extends StatelessWidget {
         'Play': (BuildContext context) => MyHomePage(gameType: 1),
         'Arcade': (BuildContext context) => MyHomePage(gameType: 2),
         'Help': (BuildContext context) => Help(),
+        'About': (BuildContext context) => About()
       },
 //      home: MyHomePage(title: 'Four Fours'),
     );
@@ -105,18 +153,29 @@ class Menu extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  newButton("Play", () =>
+          Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.0),
+          child:newButton("Play", () =>
                       Navigator.of(context).pushNamed('Play')
-                  ),
+                  )),
+          Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.0),
+          child:
                   newButton("Arcade", () =>
                       Navigator.of(context).pushNamed('Arcade')
+                  )),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    child: newButton("Learn", () =>
+                        Navigator.of(context).pushNamed('Help')
+                    ),
                   ),
-                  newButton("Learn", () => {
-                    Navigator.of(context).pushNamed('Help')
-                  }),
-
-
-
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    child: newButton("About", () =>
+                        Navigator.of(context).pushNamed('About')
+                    ),
+                  ),
                 ],
               )
             ],

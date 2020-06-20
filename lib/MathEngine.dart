@@ -1,6 +1,6 @@
 import 'dart:collection';
 import 'dart:math';
-//TODO: Implement place value multiplication for numbers greater than 9
+
 String postfix(String equation) {
   var operatorPrecedenceInStack = {
     "(": 0,
@@ -32,11 +32,13 @@ String postfix(String equation) {
   while (equation.length > 0) {
     int numIndex = 0;
     //Keep increasing number range until failure
-    while (numIndex + 1 <= equation.length && double.tryParse(equation.substring(0, numIndex + 1)) != null) {
+    while (numIndex + 1 <= equation.length &&
+        double.tryParse(equation.substring(0, numIndex + 1)) != null) {
       numIndex++;
     }
 
-    if (numIndex != 0) { //Substring represents a number and not an operation
+    if (numIndex != 0) {
+      //Substring represents a number and not an operation
       //Queue push
       //Add the number to the end of the output list
       output.addLast(equation.substring(0, numIndex));
@@ -52,27 +54,29 @@ String postfix(String equation) {
         operators.addFirst(equation.substring(0, 1));
         //Remove the first character from the equation (SIDE EFFECT)
         equation = equation.substring(1);
-      } else { //If not the first operator
+      } else {
+        //If not the first operator
         //If its a closing parenthesis
         if (equation.substring(0, 1) == ")") {
           do {
             output.addLast(operators.removeFirst());
             output.addLast(" ");
-          }
-          while (operators.first != "(");
+          } while (operators.first != "(");
           operators.removeFirst();
           //Remove the first string from the equation (SIDE EFFECT)
           equation = equation.substring(1);
           continue;
         }
-        if (operatorPrecedenceToStack[equation.substring(0, 1)] > operatorPrecedenceInStack[operators.first]) {
+        if (operatorPrecedenceToStack[equation.substring(0, 1)] >
+            operatorPrecedenceInStack[operators.first]) {
           //Stack push
           operators.addFirst(equation.substring(0, 1));
           //Remove the first string from the equation (SIDE EFFECT)
           equation = equation.substring(1);
         } else {
-          while (operatorPrecedenceToStack[equation.substring(0, 1)] < operatorPrecedenceInStack[operators.first] && operators.isNotEmpty) {
-
+          while (operatorPrecedenceToStack[equation.substring(0, 1)] <
+              operatorPrecedenceInStack[operators.first] &&
+              operators.isNotEmpty) {
             //Pop all operators with higher precedence to the output
             output.addLast(operators.removeFirst());
             //Space after operators
@@ -98,15 +102,73 @@ String postfix(String equation) {
   return out;
 }
 
+double calculate(String e) {
+  ListQueue stack = new ListQueue();
+  ListQueue equation = new ListQueue.from(e.split(" "));
 
+  print(equation);
+
+  int size = equation.length;
+
+  for (int i = 0; i < size; i++) {
+    var element = equation.removeFirst();
+    if (double.tryParse(element) != null) {
+      stack.addLast(double.tryParse(element));
+    } else {
+      switch (element) {
+        case '+':
+          double term1 = stack.removeFirst();
+          double term2 = stack.removeFirst();
+          stack.addLast(term1 + term2);
+          break;
+        case '-':
+          double term1 = stack.removeFirst();
+          double term2 = stack.removeFirst();
+          stack.addLast(term1 - term2);
+          break;
+        case 'x':
+          double term1 = stack.removeFirst();
+          double term2 = stack.removeFirst();
+          stack.addLast(term1 * term2);
+          break;
+        case '÷':
+          double term1 = stack.removeFirst();
+          double term2 = stack.removeFirst();
+          stack.addLast(term1 / term2);
+          break;
+        case '√':
+          double term1 = stack.removeLast();
+          stack.addLast(sqrt(term1).toDouble());
+          break;
+        case '!':
+          double term1 = stack.removeFirst();
+          stack.addLast(factorial(term1));
+          break;
+        case '²':
+          double term1 = stack.removeFirst();
+          stack.addLast(term1 * term1);
+          break;
+        case '^':
+          double term1 = stack.removeFirst();
+          double term2 = stack.removeFirst();
+          stack.addLast(pow(term1, term2));
+          break;
+      }
+    }
+    print(stack);
+  }
+
+  return stack.removeFirst();
+}
 
 double calculatePostfix(String equation) {
   ListQueue terms = new ListQueue(); //Functioning as a stack
   int symbolIndex = 0;
   //print(equation);
   //Convert equation to array
-  List < String > eq = equation.split(" ");
-  ListQueue < String > operations = new ListQueue < String > ();
+//   ListQueue <String> eq = ListQueue<String>.from(equation.split(" "));
+  List eq = equation.split(" ");
+  ListQueue<String> operations = new ListQueue<String>();
   for (int i = 0; i < eq.length; i++) {
     var el = eq[i];
     if (double.tryParse(el) != null) {
@@ -166,7 +228,6 @@ double calculatePostfix(String equation) {
     }
   }
   return terms.removeLast();
-
 }
 
 double factorial(double f) {
@@ -178,10 +239,9 @@ double factorial(double f) {
 
 double mathEngine(String s) {
   //print(postfix(s));
-  return calculatePostfix(postfix(s));
+  return calculate(postfix(s));
 }
 
-
 void main() {
-  print(mathEngine("(4+4)-(4+4)"));
+  print(mathEngine("√4 + √4 - (4 ÷ 4 )"));
 }
