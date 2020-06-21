@@ -162,14 +162,14 @@ class _GamePageState extends State<GamePage> {
           _body = gamePage();
         } else {
           _body = new Container(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).backgroundColor,
               child: Center(
                 child: Image(
                     image: AssetImage(logosLoading[theme]), height: 200.0),
               ));
         }
         return new Scaffold(
-            backgroundColor: Theme.of(context).accentColor, body: _body);
+            backgroundColor: Theme.of(context).backgroundColor, body: _body);
       },
     );
 //    startTimer(4);
@@ -181,6 +181,19 @@ class _GamePageState extends State<GamePage> {
 
   Widget genRow(
       String t1, Function f1, String t2, Function f2, String t3, Function f3) {
+    if (t2 == "=") {
+      return Row(
+        children: <Widget>[
+          newButton(t1, f1, Theme.of(context).accentColor,
+              Theme.of(context).textTheme.bodyText1.color),
+          newButton(t2, f2, Theme.of(context).primaryColor,
+              Theme.of(context).textTheme.headline3.color),
+          newButton(t3, f3, Theme.of(context).accentColor,
+              Theme.of(context).textTheme.bodyText1.color),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      );
+    }
     return Row(
       children: <Widget>[
         newButton(t1, f1, Theme.of(context).accentColor,
@@ -214,23 +227,22 @@ class _GamePageState extends State<GamePage> {
   Widget gamePage() {
     return Padding(
         padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.06),
         child: Center(
             child: Column(
-                //          mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
               Row(
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text("Goal:"),
+                      Text("Goal:", style: Theme.of(context).textTheme.bodyText1),
                       Text('$_goal',
                           style: Theme.of(context).textTheme.headline3),
                     ],
                   ),
                   Column(
                     children: <Widget>[
-                      Text("Highscore:"),
+                      Text("Highscore:", style: Theme.of(context).textTheme.bodyText1),
                       Text(
                         '$_score',
                         style: Theme.of(context).textTheme.headline3,
@@ -240,8 +252,9 @@ class _GamePageState extends State<GamePage> {
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               ),
-              Container(
-                  color: Colors.transparent,
+              Padding(
+                  padding: EdgeInsets.fromLTRB(0,2.0,0,15.0),
+//                  color: Colors.transparent,
                   child: Container(
                     child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
@@ -257,10 +270,12 @@ class _GamePageState extends State<GamePage> {
                         color: Theme.of(context).primaryColorDark,
                         borderRadius: BorderRadius.circular(
                             MediaQuery.of(context).size.width * 0.04)),
-                  )),
+                  )
+              ),
               Text(
                 "Fours Remaining: $_counter",
                 textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
               ),
               SizedBox(
                 height: 500,

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'utils.dart';
 import 'Themes.dart';
+import 'package:flutter/services.dart';
 
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return FutureBuilder<bool>(
         future: Future<bool>.delayed(Duration(seconds: minTime), () => true),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           Widget _body;
           if (snapshot.hasData) {
             _body = Container(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).backgroundColor,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -54,9 +56,9 @@ class Menu extends StatelessWidget {
             );
           } else {
             _body = new Scaffold(
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).backgroundColor,
                 body: Container(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).backgroundColor,
                     child: Center(
                       child: Image(
                           image: AssetImage(logosLoading[theme]),

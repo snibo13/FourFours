@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'utils.dart';
+import 'package:flutter/services.dart';
 
 class Help extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
       body: Container(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).backgroundColor,
         child: ListView(
           children: <Widget>[
             Center(

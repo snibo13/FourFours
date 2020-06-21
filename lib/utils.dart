@@ -34,7 +34,7 @@ Widget helpElement(String head, String content, BuildContext context) {
     padding: EdgeInsets.all(15.0),
     child: Card(
         elevation: 0.0,
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).backgroundColor,
         child: ListTile(
           title: Text(
             "$head",

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'utils.dart';
+import 'package:flutter/services.dart';
 
 class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -14,7 +16,7 @@ class About extends StatelessWidget {
             FlatButton(
               child: Text(
                 "snibo.me",
-                style: TextStyle(decoration: TextDecoration.underline),
+                style: TextStyle(decoration: TextDecoration.underline, color: Theme.of(context).primaryColor),
               ),
               onPressed: () => launchSite("http://snibo.me"),
             ),
