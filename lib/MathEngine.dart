@@ -75,7 +75,7 @@ String postfix(String equation) {
           equation = equation.substring(1);
         } else {
           while (operatorPrecedenceToStack[equation.substring(0, 1)] <
-              operatorPrecedenceInStack[operators.first] &&
+                  operatorPrecedenceInStack[operators.first] &&
               operators.isNotEmpty) {
             //Pop all operators with higher precedence to the output
             output.addLast(operators.removeFirst());
@@ -242,6 +242,3 @@ double mathEngine(String s) {
   return calculate(postfix(s));
 }
 
-void main() {
-  print(mathEngine("√4 + √4 - (4 ÷ 4 )"));
-}

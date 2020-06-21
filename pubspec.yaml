@@ -76,6 +76,6 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
-   - assets/audio/correct.mp3
-   - assets/images/logo.gif
-   - assets/images/logo.png
+    - assets/audio/correct.mp3
+    - assets/images/logo1.gif
+    - assets/images/logo1.png
